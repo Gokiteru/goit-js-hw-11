@@ -1,23 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-
-<body>
-  <form class="search-form" id="search-form">
-    <input
-      type="text"
-      name="searchQuery"
-      autocomplete="off"
-      placeholder="Search images..."
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/modern-normalize/modern-normalize.css"
     />
-    <button type="submit">Search</button>
-  </form>
-    
-  <script src="index.js"></script>
-</body>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <form class="search-form" id="search-form">
+      <input
+        type="text"
+        name="searchQuery"
+        autocomplete="off"
+        placeholder="Search images..."
+      />
+      <button type="submit">Search</button>
+    </form>
+
+    <div class="container">
+      <div class="gallery"></div>
+    </div>
+
+    <button class="load-more is-hidden">Load more</button>
+
+    <script type="module" src="index.js"></script>
+  </body>
 </html>
