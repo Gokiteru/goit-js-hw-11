@@ -64,7 +64,6 @@ function onSearchForm(e) {
   page = 1;
   query = e.currentTarget.elements.searchQuery.value.trim();
   gallery.innerHTML = '';
-  loadMore.classList.remove('is-hidden');
 
   if (query === '') {
     Notiflix.Notify.failure(
@@ -80,6 +79,7 @@ function onSearchForm(e) {
           'Sorry, there are no images matching your search query. Please try again.'
         );
       } else {
+        loadMore.classList.remove('is-hidden');
         renderGallery(data.hits);
         simpleLightBox = new SimpleLightbox('.gallery a').refresh();
         Notiflix.Notify.success(`Found ${data.totalHits} images.`);
