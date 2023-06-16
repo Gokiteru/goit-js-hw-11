@@ -48,15 +48,6 @@ function renderGallery(images) {
     .join('');
 
   gallery.insertAdjacentHTML('beforeend', markup);
-
-  const { height: cardHeight } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
-
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
 }
 
 function onSearchForm(e) {
@@ -66,15 +57,19 @@ function onSearchForm(e) {
   gallery.innerHTML = '';
 
   if (query === '') {
+    loadMore.classList.add('is-hidden');
     Notiflix.Notify.failure(
       'The search string cannot be empty. Please specify your search query.'
     );
     return;
   }
 
-  fetchImages(query, page, perPage)
-    .then(data => {
+  (async () => {
+    try {
+      const data = await fetchImages(query, page, perPage);
+
       if (data.totalHits === 0) {
+        loadMore.classList.add('is-hidden');
         Notiflix.Notify.failure(
           'Sorry, there are no images matching your search query. Please try again.'
         );
@@ -82,31 +77,40 @@ function onSearchForm(e) {
         loadMore.classList.remove('is-hidden');
         renderGallery(data.hits);
         simpleLightBox = new SimpleLightbox('.gallery a').refresh();
-        Notiflix.Notify.success(`Found ${data.totalHits} images.`);
+        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+        if (data.totalHits < 40) {
+          loadMore.classList.add('is-hidden');
+        }
       }
-    })
-    .catch(error => console.log(error))
-    .finally(() => {
+    } catch (error) {
+      console.log(error);
+    } finally {
       searchForm.reset();
-    });
+    }
+  })();
 }
 
 function onloadMore() {
   page += 1;
   simpleLightBox.destroy();
-
-  fetchImages(query, page, perPage)
-    .then(data => {
+  (async () => {
+    try {
+      const data = await fetchImages(query, page, perPage);
       renderGallery(data.hits);
       simpleLightBox = new SimpleLightbox('.gallery a').refresh();
 
       const totalPages = Math.ceil(data.totalHits / perPage);
 
-      if (page > totalPages) {
-        Notiflix.Notify.failure("You've reached the end of search results.");
+      if (page >= totalPages) {
+        loadMore.classList.add('is-hidden');
+        Notiflix.Notify.failure(
+          "We're sorry, but you've reached the end of search results."
+        );
       }
-    })
-    .catch(error => console.log(error));
+    } catch (error) {
+      console.log(error);
+    }
+  })();
 }
 
 loadMore.addEventListener('click', onloadMore);
